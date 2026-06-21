@@ -62,6 +62,7 @@ async def save_request_app_settings(
     app_url: str = Form(...),
     api_key: str = Form(...),
     request_app_id: str = Form(""),
+    external_url: str = Form(""),
 ):
     normalized_type = app_type.strip().lower()
 
@@ -107,6 +108,7 @@ async def save_request_app_settings(
         api_key=api_key,
         version=result.get("version", "Unknown"),
         connected=1,
+        external_url=external_url.strip().rstrip("/"),
     )
 
     saved_request_app = get_request_app(saved_request_app_id)

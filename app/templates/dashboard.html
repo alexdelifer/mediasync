@@ -110,7 +110,7 @@
 
             {% if media_server %}
                 {% set media_server_status = service_statuses.get("media_server", {}) %}
-                <a class="dashboard-service-row" href="{{ media_server['server_url'] }}" target="_blank" rel="noopener noreferrer" title="{{ media_server_status.get('details', '') }}">
+                <a class="dashboard-service-row" href="{{ media_server['external_url'] or media_server['server_url'] }}" target="_blank" rel="noopener noreferrer" title="{{ media_server_status.get('details', '') }}">
                     <div class="dashboard-service-live-dot {% if not media_server_status.get('reachable', media_server['connected']) %}error{% endif %}"></div>
                     <img class="dashboard-service-logo" src="/static/img/{{ media_server['server_type'] }}-logo.png" alt="{{ media_server['server_type']|capitalize }}">
                     <div class="dashboard-service-info">
@@ -133,7 +133,7 @@
                     {% set request_stats = request_app_stats.get(request_app["id"], {}) %}
                     {% set request_status = service_statuses.get("request_apps", {}).get(request_app["id"], {}) %}
 
-                    <a class="dashboard-service-row dashboard-request-service-row" href="{{ request_app['app_url'] }}" target="_blank" rel="noopener noreferrer" title="{{ request_status.get('details', '') }}">
+                    <a class="dashboard-service-row dashboard-request-service-row" href="{{ request_app['external_url'] or request_app['app_url'] }}" target="_blank" rel="noopener noreferrer" title="{{ request_status.get('details', '') }}">
                         <div class="dashboard-service-live-dot {% if not request_status.get('reachable', request_app['connected']) %}error{% endif %}"></div>
                         <img class="dashboard-service-logo" src="/static/img/{{ request_app['app_type'] }}-logo.png" alt="{{ request_app['app_name'] }}">
 
@@ -158,7 +158,7 @@
             {% if sources %}
                 {% for source in sources %}
                     {% set source_status = service_statuses.get("sources", {}).get(source["id"], {}) %}
-                    <a class="dashboard-service-row" href="{{ source['source_url'] }}" target="_blank" rel="noopener noreferrer" title="{{ source_status.get('details', '') }}">
+                    <a class="dashboard-service-row" href="{{ source['external_url'] or source['source_url'] }}" target="_blank" rel="noopener noreferrer" title="{{ source_status.get('details', '') }}">
                         <div class="dashboard-service-live-dot {% if not source_status.get('reachable', source['connected']) %}error{% endif %}"></div>
                         <img class="dashboard-service-logo" src="/static/img/{{ source['source_type'] }}-logo.png" alt="{{ source['source_name'] }}">
                         <div class="dashboard-service-info">
@@ -186,7 +186,7 @@
                     {% set queue = stats.get("queue", {}) %}
                     {% set active_count = queue.get("active_count", 0) %}
 
-                    <a class="dashboard-service-row dashboard-downloader-row {% if active_count|int > 0 %}downloader-active{% endif %}" href="{{ downloader['downloader_url'] }}" target="_blank" rel="noopener noreferrer" data-downloader-row data-downloader-id="{{ downloader['id'] }}" title="{{ downloader_status.get('details', '') }}">
+                    <a class="dashboard-service-row dashboard-downloader-row {% if active_count|int > 0 %}downloader-active{% endif %}" href="{{ downloader['external_url'] or downloader['downloader_url'] }}" target="_blank" rel="noopener noreferrer" data-downloader-row data-downloader-id="{{ downloader['id'] }}" title="{{ downloader_status.get('details', '') }}">
                         <div class="dashboard-service-live-dot {% if not downloader_status.get('reachable', downloader['connected']) %}error{% endif %}" data-downloader-dot></div>
                         <img class="dashboard-service-logo" src="/static/img/{{ logo_file }}" alt="{{ downloader['downloader_name'] }}">
 

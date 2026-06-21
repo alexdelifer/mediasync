@@ -790,6 +790,7 @@ async function saveSettingsSource(row) {
     formData.append("api_key", apiKey);
     formData.append("version", row.dataset.sourceVersion || "Unknown");
     formData.append("libraries_json", JSON.stringify(libraries));
+    formData.append("external_url", row.querySelector('input[name="external_url"]')?.value.trim() || "");
 
     const result = await fetchJson("/api/source/save", formData);
 

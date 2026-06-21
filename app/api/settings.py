@@ -26,11 +26,13 @@ async def save_media_server_settings(
     server_url: str = Form(...),
     api_key: str = Form(...),
     timezone: str = Form(...),
+    external_url: str = Form(""),
 ):
     updated = update_media_server_config(
         server_url=server_url,
         api_key=api_key,
         timezone=timezone,
+        external_url=external_url.strip().rstrip("/"),
     )
 
     if not updated:

@@ -45,6 +45,16 @@
                 </label>
 
                 <label>
+                    <span>External URL <small>(optional, clickable link)</small></span>
+                    <input
+                        name="external_url"
+                        type="text"
+                        placeholder="https://jellyfin.example.com"
+                        value="{{ media_server['external_url'] if media_server and media_server['external_url'] else '' }}"
+                    >
+                </label>
+
+                <label>
                     <span>API Key</span>
                     <div class="settings-secret-row">
                         <input
@@ -346,6 +356,11 @@
                                     </label>
 
                                     <label>
+                                        <span>External URL <small>(optional, clickable link)</small></span>
+                                        <input name="external_url" type="text" placeholder="https://requests.example.com" value="{{ request_app['external_url'] or '' }}">
+                                    </label>
+
+                                    <label>
                                         <span>API Key</span>
                                         <div class="settings-secret-row">
                                             <input name="api_key" type="password" placeholder="Enter API key" value="{{ request_app['api_key'] }}">
@@ -445,6 +460,11 @@
                                     <label>
                                         <span>Server URL</span>
                                         <input name="downloader_url" type="text" placeholder="Enter server URL" value="{{ downloader['downloader_url'] }}">
+                                    </label>
+
+                                    <label>
+                                        <span>External URL <small>(optional, clickable link)</small></span>
+                                        <input name="external_url" type="text" placeholder="https://downloads.example.com" value="{{ downloader['external_url'] or '' }}">
                                     </label>
 
                                     <div data-downloader-auth-fields>
@@ -593,6 +613,11 @@
                                     <label>
                                         <span>Server URL</span>
                                         <input name="source_url" type="text" value="{{ source['source_url'] }}" placeholder="Enter server URL">
+                                    </label>
+
+                                    <label>
+                                        <span>External URL <small>(optional, clickable link)</small></span>
+                                        <input name="external_url" type="text" value="{{ source['external_url'] or '' }}" placeholder="https://sonarr.example.com">
                                     </label>
 
                                     <label>

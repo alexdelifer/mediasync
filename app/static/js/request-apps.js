@@ -357,6 +357,7 @@ async function saveRequestApp(row) {
     formData.append("app_type", appType);
     formData.append("app_url", appUrl);
     formData.append("api_key", apiKey);
+    formData.append("external_url", row.querySelector('input[name="external_url"]')?.value.trim() || "");
 
     const result = await requestAppFetchJson("/api/request-apps/save", formData);
 
@@ -867,6 +868,7 @@ async function saveDownloader(row) {
     formData.append("api_key", apiKey);
     formData.append("username", username);
     formData.append("password", password);
+    formData.append("external_url", row.querySelector('input[name="external_url"]')?.value.trim() || "");
 
     const result = await requestAppFetchJson("/api/downloaders/save", formData);
 

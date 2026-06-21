@@ -71,6 +71,7 @@ async def save_source_config(
     version: str = Form(...),
     libraries_json: str = Form(""),
     source_id: str = Form(""),
+    external_url: str = Form(""),
 ):
     libraries = _parse_libraries_json(libraries_json)
 
@@ -99,6 +100,7 @@ async def save_source_config(
         api_key=api_key,
         version=version,
         libraries=libraries,
+        external_url=external_url.strip().rstrip("/"),
     )
 
     source = get_source(saved_source_id)

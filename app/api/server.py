@@ -19,6 +19,7 @@ async def test_media_server(
     api_key: str = Form(...),
     timezone: str = Form(...),
     mediasync_url: str = Form(""),
+    external_url: str = Form(""),
 ):
     normalized_mediasync_url = mediasync_url.strip().rstrip("/")
     normalized_server_type = server_type.strip().lower()
@@ -62,6 +63,7 @@ async def test_media_server(
         connected=1,
         server_name=result["server_name"],
         version=result["version"],
+        external_url=external_url.strip().rstrip("/"),
     )
 
     save_app_settings(

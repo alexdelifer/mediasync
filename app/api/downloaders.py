@@ -91,6 +91,7 @@ async def save_downloader_settings(
     username: str = Form(""),
     password: str = Form(""),
     downloader_id: str = Form(""),
+    external_url: str = Form(""),
 ):
     normalized_type = downloader_type.strip().lower()
 
@@ -138,6 +139,7 @@ async def save_downloader_settings(
         password=password,
         version=result.get("version", "Unknown"),
         connected=1,
+        external_url=external_url.strip().rstrip("/"),
     )
 
     return {

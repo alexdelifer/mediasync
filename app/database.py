@@ -288,6 +288,10 @@ def init_db():
     _add_column_if_missing(c, "sources", "sort_order", "INTEGER DEFAULT 0")
     _add_column_if_missing(c, "request_apps", "sort_order", "INTEGER DEFAULT 0")
     _add_column_if_missing(c, "downloaders", "sort_order", "INTEGER DEFAULT 0")
+    _add_column_if_missing(c, "media_server", "external_url", "TEXT")
+    _add_column_if_missing(c, "sources", "external_url", "TEXT")
+    _add_column_if_missing(c, "request_apps", "external_url", "TEXT")
+    _add_column_if_missing(c, "downloaders", "external_url", "TEXT")
     _add_column_if_missing(c, "downloaders", "username", "TEXT")
     _add_column_if_missing(c, "downloaders", "password", "TEXT")
     _add_column_if_missing(c, "sync_activity", "lifecycle_id", "INTEGER")
@@ -494,16 +498,16 @@ def get_media_server():
     return dict(row) if row else None
 
 
-def save_media_server(server_type, server_url, api_key, timezone, connected, server_name, version):
+def save_media_server(server_type, server_url, api_key, timezone, connected, server_name, version, external_url=""):
     conn = get_connection()
     c = conn.cursor()
     c.execute("DELETE FROM media_server")
     c.execute("""
         INSERT INTO media_server (
-            server_type, server_url, api_key, timezone, connected, server_name, version
+            server_type, server_url, api_key, timezone, connected, server_name, version, external_url
         )
-        VALUES (?, ?, ?, ?, ?, ?, ?)
-    """, (server_type, server_url, api_key, timezone, connected, server_name, version))
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+    """, (server_type, server_url, api_key, timezone, connected, server_name, version, external_url))
     c.execute("""
         INSERT INTO app_settings (key, value)
         VALUES ('timezone', ?)
@@ -513,16 +517,18 @@ def save_media_server(server_type, server_url, api_key, timezone, connected, ser
     conn.close()
 
 
-def update_media_server_config(server_url, api_key, timezone):
+def update_media_server_config(server_url, api_key, timezone, external_url=None):
     server = get_media_server()
     if not server:
         return False
+    if external_url is None:
+        external_url = server["external_url"] if "external_url" in server.keys() else ""
     conn = get_connection()
     c = conn.cursor()
     c.execute("""
-        UPDATE media_server SET server_url = ?, api_key = ?, timezone = ?
+        UPDATE media_server SET server_url = ?, api_key = ?, timezone = ?, external_url = ?
         WHERE id = ?
-    """, (server_url, api_key, timezone, server["id"]))
+    """, (server_url, api_key, timezone, external_url, server["id"]))
     c.execute("""
         INSERT INTO app_settings (key, value)
         VALUES ('timezone', ?)
@@ -533,15 +539,15 @@ def update_media_server_config(server_url, api_key, timezone):
     return True
 
 
-def save_source(source_name, source_type, source_url, api_key, version, libraries, source_id=None):
+def save_source(source_name, source_type, source_url, api_key, version, libraries, source_id=None, external_url=""):
     conn = get_connection()
     c = conn.cursor()
     if source_id:
         c.execute("""
             UPDATE sources SET source_name = ?, source_type = ?, source_url = ?,
-                api_key = ?, version = ?, connected = 1
+                api_key = ?, version = ?, connected = 1, external_url = ?
             WHERE id = ?
-        """, (source_name, source_type, source_url, api_key, version, source_id))
+        """, (source_name, source_type, source_url, api_key, version, external_url, source_id))
         c.execute("DELETE FROM source_library_map WHERE source_id = ?", (source_id,))
         saved_source_id = int(source_id)
     else:
@@ -549,10 +555,10 @@ def save_source(source_name, source_type, source_url, api_key, version, librarie
         next_order = c.fetchone()[0]
         c.execute("""
             INSERT INTO sources (
-                source_name, source_type, source_url, api_key, version, connected, sort_order
+                source_name, source_type, source_url, api_key, version, connected, sort_order, external_url
             )
-            VALUES (?, ?, ?, ?, ?, 1, ?)
-        """, (source_name, source_type, source_url, api_key, version, next_order))
+            VALUES (?, ?, ?, ?, ?, 1, ?, ?)
+        """, (source_name, source_type, source_url, api_key, version, next_order, external_url))
         saved_source_id = c.lastrowid
     for library in libraries:
         c.execute("""
@@ -628,17 +634,17 @@ def get_sources():
 
 
 
-def save_request_app(app_name, app_type, app_url, api_key, version="", connected=1, request_app_id=None):
+def save_request_app(app_name, app_type, app_url, api_key, version="", connected=1, request_app_id=None, external_url=""):
     conn = get_connection()
     c = conn.cursor()
 
     if request_app_id:
         c.execute("""
             UPDATE request_apps SET app_name = ?, app_type = ?, app_url = ?,
-                api_key = ?, version = ?, connected = ?
+                api_key = ?, version = ?, connected = ?, external_url = ?
             WHERE id = ?
         """, (
-            app_name, app_type, app_url, api_key, version, connected, request_app_id
+            app_name, app_type, app_url, api_key, version, connected, external_url, request_app_id
         ))
         saved_request_app_id = int(request_app_id)
     else:
@@ -646,11 +652,11 @@ def save_request_app(app_name, app_type, app_url, api_key, version="", connected
         next_order = c.fetchone()[0]
         c.execute("""
             INSERT INTO request_apps (
-                app_name, app_type, app_url, api_key, version, connected, sort_order
+                app_name, app_type, app_url, api_key, version, connected, sort_order, external_url
             )
-            VALUES (?, ?, ?, ?, ?, ?, ?)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
         """, (
-            app_name, app_type, app_url, api_key, version, connected, next_order
+            app_name, app_type, app_url, api_key, version, connected, next_order, external_url
         ))
         saved_request_app_id = c.lastrowid
 
@@ -726,6 +732,7 @@ def save_downloader(
     version="",
     connected=1,
     downloader_id=None,
+    external_url="",
 ):
     conn = get_connection()
     c = conn.cursor()
@@ -734,7 +741,7 @@ def save_downloader(
         c.execute("""
             UPDATE downloaders SET downloader_name = ?, downloader_type = ?,
                 downloader_url = ?, api_key = ?, username = ?, password = ?,
-                version = ?, connected = ?
+                version = ?, connected = ?, external_url = ?
             WHERE id = ?
         """, (
             downloader_name,
@@ -745,6 +752,7 @@ def save_downloader(
             password,
             version,
             connected,
+            external_url,
             downloader_id,
         ))
         saved_downloader_id = int(downloader_id)
@@ -754,9 +762,9 @@ def save_downloader(
         c.execute("""
             INSERT INTO downloaders (
                 downloader_name, downloader_type, downloader_url, api_key,
-                username, password, version, connected, sort_order
+                username, password, version, connected, sort_order, external_url
             )
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         """, (
             downloader_name,
             downloader_type,
@@ -767,6 +775,7 @@ def save_downloader(
             version,
             connected,
             next_order,
+            external_url,
         ))
         saved_downloader_id = c.lastrowid
 
