@@ -147,6 +147,7 @@ Multiple instances are supported.
 - SABnzbd
 - qBittorrent
 - Transmission
+- rTorrent / ruTorrent (XML-RPC)
 
 Multiple instances are supported.
 

@@ -438,6 +438,7 @@
                                             <option value="sabnzbd" {% if downloader["downloader_type"] == "sabnzbd" %}selected{% endif %}>SABnzbd</option>
                                             <option value="transmission" {% if downloader["downloader_type"] in ["transmission", "qbittorrent"] %}selected{% endif %}>Transmission</option>
                                             <option value="qbittorrent" {% if downloader["downloader_type"] == "qbittorrent" %}selected{% endif %}>qBittorrent</option>
+                                            <option value="rtorrent" {% if downloader["downloader_type"] == "rtorrent" %}selected{% endif %}>rTorrent</option>
                                         </select>
                                     </label>
 
@@ -447,7 +448,7 @@
                                     </label>
 
                                     <div data-downloader-auth-fields>
-                                        {% if downloader["downloader_type"] in ["transmission", "qbittorrent"] %}
+                                        {% if downloader["downloader_type"] in ["transmission", "qbittorrent", "rtorrent"] %}
                                             <label>
                                                 <span>Username</span>
                                                 <input name="username" type="text" placeholder="Enter username" value="{{ downloader['username'] or '' }}">

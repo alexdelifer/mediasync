@@ -62,6 +62,9 @@ def _normalize_downloader_type(value: Any) -> str:
     if normalized == "transmission":
         return "transmission"
 
+    if normalized in {"rtorrent", "rutorrent"}:
+        return "rtorrent"
+
     return normalized or "downloader"
 
 

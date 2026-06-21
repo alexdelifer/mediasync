@@ -3966,6 +3966,10 @@ function lifecycleIconFile(event) {
         return "/static/img/transmission-logo.png";
     }
 
+    if (normalizedType === "rtorrent" || normalizedName.includes("rtorrent") || normalizedName.includes("rutorrent")) {
+        return "/static/img/rtorrent-logo.png";
+    }
+
     if (normalizedType === "radarr" || normalizedName.includes("radarr")) {
         return "/static/img/radarr-logo.png";
     }
@@ -4005,6 +4009,7 @@ function lifecycleSourceLabel(sourceType) {
         sabnzbd: "SABnzbd",
         qbittorrent: "qBittorrent",
         transmission: "Transmission",
+        rtorrent: "rTorrent",
         emby: "Emby",
         jellyfin: "Jellyfin",
         plex: "Plex",

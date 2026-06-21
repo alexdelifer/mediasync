@@ -509,6 +509,7 @@ function createDownloaderRow() {
                             <option value="sabnzbd" selected>SABnzbd</option>
                             <option value="transmission">Transmission</option>
                             <option value="qbittorrent">qBittorrent</option>
+                            <option value="rtorrent">rTorrent</option>
                         </select>
                     </label>
 
@@ -693,7 +694,7 @@ function markDownloaderUnsaved(row) {
 }
 
 function downloaderUsesUsernamePassword(downloaderType) {
-    return ["transmission", "qbittorrent"].includes(String(downloaderType || "").trim().toLowerCase());
+    return ["transmission", "qbittorrent", "rtorrent"].includes(String(downloaderType || "").trim().toLowerCase());
 }
 
 function downloaderAuthFieldsTemplate(downloaderType, values = {}) {

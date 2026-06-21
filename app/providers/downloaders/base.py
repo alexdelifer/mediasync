@@ -5,6 +5,7 @@ SUPPORTED_DOWNLOADER_TYPES = {
     "sabnzbd": "SABnzbd",
     "transmission": "Transmission",
     "qbittorrent": "qBittorrent",
+    "rtorrent": "rTorrent",
 }
 
 
@@ -57,6 +58,14 @@ def build_downloader_provider(
         from app.providers.downloaders.qbittorrent import QBittorrentProvider
 
         return QBittorrentProvider(
+            server_url=server_url or "",
+            api_key=api_key or "",
+        )
+
+    if normalized_type == "rtorrent":
+        from app.providers.downloaders.rtorrent import RTorrentProvider
+
+        return RTorrentProvider(
             server_url=server_url or "",
             api_key=api_key or "",
         )
